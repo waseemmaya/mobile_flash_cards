@@ -1,19 +1,52 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import Decks from "./src/pages/Decks";
+import AddDeck from "./src/pages/AddDeck";
+import DeckView from "./src/pages/DeckView";
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-export default function App() {
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "tomato",
+    accent: "yellow",
+  },
+};
+
+export default class App extends Component {
+  render() {
+    return (
+      // <PaperProvider>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <Tab.Navigator>
+            <Tab.Screen name="Decks" component={DeckStacks} />
+            <Tab.Screen name="AddDeck" component={AddStacks} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    );
+  }
+}
+
+function DeckStacks() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <Stack.Navigator>
+      <Stack.Screen name="Decks" component={Decks} />
+      <Stack.Screen name="DeckView" component={DeckView} />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function AddStacks() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="AddDeck" component={AddDeck} />
+    </Stack.Navigator>
+  );
+}
