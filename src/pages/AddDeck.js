@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Text, View, TextInput, Button } from "react-native";
-import { saveDeckTitle } from "../services/storageHelper";
 import SnackBarNotifier from "../components/SnackBarNotifier";
 
 export default class AddDeck extends Component {
@@ -24,7 +23,7 @@ export default class AddDeck extends Component {
           value={deckTitle}
         />
         <Button
-          onPress={() => {
+          onPress={async () => {
             const { deckTitle } = this.state;
             if (!deckTitle) {
               this.setState({
@@ -32,9 +31,15 @@ export default class AddDeck extends Component {
               });
               return;
             }
-            saveDeckTitle(deckTitle);
+            await this.props.handleAddDeck(deckTitle);
+            this.setState({
+              deckTitle: "",
+            });
             const { navigation } = this.props;
-            navigation.navigate("Decks");
+            navigation.navigate("DeckView", {
+              title: deckTitle,
+              questions: [],
+            });
           }}
           title="Submit"
           //   color="#841584"

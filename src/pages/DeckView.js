@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import { Button, Card, Title, Paragraph } from "react-native-paper";
-import { deleteDeck } from "../services/storageHelper";
+import NoDeckFound from "../components/NoDeckFound";
 
 export default class DeckView extends Component {
   render() {
-    const deck = this.props.route.params;
+    const deckId = this.props.route.params.title;
+    let deck = this.props.decksList.find((d) => d.title === deckId);
+
+    if (!deck) {
+      return null;
+    }
     return (
       <View style={{ flex: 1 }}>
         <Card style={{ marginTop: 50 }}>
@@ -44,7 +49,7 @@ export default class DeckView extends Component {
           color="red"
           mode="contained"
           onPress={() => {
-            deleteDeck(deck.title);
+            this.props.handleDelete(deck.title);
             const { navigation } = this.props;
             navigation.navigate("Decks");
           }}

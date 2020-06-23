@@ -5,6 +5,7 @@ import { Button } from "react-native-paper";
 export default class ShowResults extends Component {
   render() {
     const { correct, incorrect } = this.props.state;
+
     return (
       <View>
         <Text>Show Results here</Text>
@@ -15,11 +16,7 @@ export default class ShowResults extends Component {
         <Button
           mode="contained"
           onPress={() => {
-            const deck = this.props.route.params;
-            const { navigation } = this.props;
-            navigation.navigate("DeckView", {
-              ...deck,
-            });
+            this.props.restartQuiz();
           }}
         >
           Restart Quiz

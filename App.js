@@ -8,6 +8,12 @@ import AddDeck from "./src/pages/AddDeck";
 import DeckView from "./src/pages/DeckView";
 import AddCard from "./src/pages/AddCard";
 import Quiz from "./src/pages/Quiz";
+import {
+  getDecks,
+  deleteDeck,
+  addCardToDeck,
+  saveDeckTitle,
+} from "./src/services/storageHelper";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -22,14 +28,72 @@ const theme = {
 };
 
 export default class App extends Component {
+  state = {
+    decksList: null,
+    refreshing: false,
+  };
+
+  handleDelete = async (title) => {
+    await deleteDeck(title);
+    this.getDecksList();
+  };
+
+  handleAddCard = async (question, answer, title) => {
+    await addCardToDeck(question, answer, title);
+    this.getDecksList();
+  };
+
+  handleAddDeck = async (deckTitle) => {
+    await saveDeckTitle(deckTitle);
+    this.getDecksList();
+  };
+
+  handleRefresh = async () => {
+    this.setState({
+      refreshing: true,
+    });
+    await this.getDecksList();
+    this.setState({
+      refreshing: false,
+    });
+  };
+
+  componentDidMount() {
+    this.getDecksList();
+  }
+
+  getDecksList = async () => {
+    try {
+      let decksList = await getDecks();
+      this.setState({
+        decksList,
+      });
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
   render() {
+    const { decksList, refreshing } = this.state;
+    let customProps = {
+      decksList,
+      refreshing,
+      handleRefresh: this.handleRefresh,
+      handleDelete: this.handleDelete,
+      handleAddCard: this.handleAddCard,
+      handleAddDeck: this.handleAddDeck,
+    };
     return (
       // <PaperProvider theme={theme}>
       <PaperProvider>
         <NavigationContainer>
           <Tab.Navigator>
-            <Tab.Screen name="Decks" component={DeckStacks} />
-            <Tab.Screen name="AddDeck" component={AddStacks} />
+            <Tab.Screen scre={"hello"} name="Decks">
+              {() => <DeckStacks {...customProps} />}
+            </Tab.Screen>
+            <Tab.Screen name="AddDeck" {...customProps}>
+              {() => <AddStacks {...customProps} />}
+            </Tab.Screen>
           </Tab.Navigator>
         </NavigationContainer>
       </PaperProvider>
@@ -37,21 +101,29 @@ export default class App extends Component {
   }
 }
 
-function DeckStacks() {
+function DeckStacks(props) {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Decks" component={Decks} />
-      <Stack.Screen name="DeckView" component={DeckView} />
-      <Stack.Screen name="AddCard" component={AddCard} />
+      <Stack.Screen name="Decks">
+        {(params) => <Decks {...props} {...params} />}
+      </Stack.Screen>
+      <Stack.Screen name="DeckView">
+        {(params) => <DeckView {...props} {...params} />}
+      </Stack.Screen>
+      <Stack.Screen name="AddCard">
+        {(params) => <AddCard {...props} {...params} />}
+      </Stack.Screen>
       <Stack.Screen name="Quiz" component={Quiz} />
     </Stack.Navigator>
   );
 }
 
-function AddStacks() {
+function AddStacks(props) {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="AddDeck" component={AddDeck} />
+      <Stack.Screen name="AddDeck">
+        {(params) => <AddDeck {...props} {...params} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }

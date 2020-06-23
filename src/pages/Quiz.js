@@ -16,11 +16,28 @@ export default class Quiz extends Component {
   };
 
   componentDidMount() {
+    this.setQuiz();
+  }
+
+  setQuiz = () => {
     const deck = this.props.route.params;
     this.setState({
       deck,
+      showResults: false,
     });
-  }
+  };
+
+  restartQuiz = () => {
+    this.setState({
+      deck: null,
+      showAnswer: false,
+      currentQuestion: 0,
+      correct: 0,
+      showResults: false,
+      incorrect: 0,
+    });
+    this.setQuiz();
+  };
 
   RenderProgres = () => {
     const { currentQuestion, deck } = this.state;
@@ -55,8 +72,12 @@ export default class Quiz extends Component {
           color="red"
           onPress={() => {
             const { deck, currentQuestion } = this.state;
+            console.log("deck.questions.length: ", deck.questions.length);
+            console.log("currentQuestion + 1: ", currentQuestion + 1);
             if (deck.questions.length === currentQuestion + 1) {
               this.setState({
+                incorrect: ++this.state.incorrect,
+
                 showResults: true,
               });
               return;
@@ -76,6 +97,7 @@ export default class Quiz extends Component {
             if (deck.questions.length === currentQuestion + 1) {
               this.setState({
                 showResults: true,
+                correct: ++this.state.correct,
               });
               return;
             }
@@ -95,7 +117,13 @@ export default class Quiz extends Component {
     const { deck, showResults } = this.state;
 
     if (showResults) {
-      return <ShowResults {...this.props} state={this.state} />;
+      return (
+        <ShowResults
+          {...this.props}
+          state={this.state}
+          restartQuiz={this.restartQuiz}
+        />
+      );
     }
 
     if (!deck) {
@@ -109,7 +137,7 @@ export default class Quiz extends Component {
     }
     let { questions } = deck;
 
-    if (questions.style === 0) {
+    if (questions.length === 0) {
       return <NoQuestion />;
     }
 

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, TextInput, Button } from "react-native";
-import { addCardToDeck } from "../services/storageHelper";
+import { View, TextInput, Button } from "react-native";
 
 export default class AddCard extends Component {
   constructor(props) {
@@ -28,7 +27,7 @@ export default class AddCard extends Component {
         />
         <Button
           onPress={() => {
-            addCardToDeck(question, answer, deck.title);
+            this.props.handleAddCard(question, answer, deck.title);
             const { navigation } = this.props;
             navigation.navigate("DeckView", {
               ...deck,

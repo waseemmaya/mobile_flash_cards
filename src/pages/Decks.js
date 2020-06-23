@@ -7,57 +7,26 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Card, Title, Paragraph } from "react-native-paper";
-import { getDecks } from "../services/storageHelper";
 import NoDeckFound from "../components/NoDeckFound";
 
 export default class Decks extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      decksList: null,
-      refreshing: false,
-    };
-  }
-
-  componentDidMount() {
-    this.getDecksList();
-  }
-
-  getDecksList = async () => {
-    try {
-      let decksRes = await getDecks();
-      this.setState({
-        decksList: decksRes,
-      });
-    } catch (error) {}
-  };
-
-  handleRefresh = async () => {
-    this.setState({
-      refreshing: true,
-    });
-    await this.getDecksList();
-    this.setState({
-      refreshing: false,
-    });
-  };
-
   handleCard = (deck) => {
     const { navigation } = this.props;
+
     navigation.navigate("DeckView", {
       ...deck,
     });
   };
 
   render() {
-    const { decksList } = this.state;
+    const { decksList } = this.props;
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           refreshControl={
             <RefreshControl
-              refreshing={this.state.refreshing}
+              refreshing={this.props.refreshing}
               onRefresh={this.handleRefresh}
             />
           }
