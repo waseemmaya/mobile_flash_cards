@@ -1,7 +1,6 @@
 import { AsyncStorage } from "react-native";
 
 const DECKS = "DECKS";
-const DECK = "DECK";
 
 export const getDecks = async () => {
   try {
@@ -11,7 +10,6 @@ export const getDecks = async () => {
     }
     return JSON.parse(decks);
   } catch (error) {
-    console.log("error: ", error);
     return [];
   }
 };
@@ -20,12 +18,17 @@ export const getDeck = async (id) => {
   try {
     let decks = await getDecks();
     let currentDeck = decks.find((d) => d.title === id);
-    console.log("currentDeck: ", currentDeck);
+
     return currentDeck;
   } catch (error) {
-    console.log("error: ", error);
     return null;
   }
+};
+
+export const deleteDeck = async (id) => {
+  let decks = await getDecks();
+  let remainingDecks = decks.filter((d) => d.title !== id);
+  await setLocalStorage(DECKS, remainingDecks);
 };
 
 // add new deck
@@ -33,7 +36,6 @@ export const saveDeckTitle = async (title) => {
   // 1- check if deck is already exist with given title
   let isExist = await getDeck(title);
   if (isExist) {
-    console.log("already exist");
     return false;
   }
   let decks = await getDecks();
@@ -45,7 +47,20 @@ export const saveDeckTitle = async (title) => {
   await setLocalStorage(DECKS, decks);
 };
 
-export const addCardToDeck = async (title, card) => {};
+export const addCardToDeck = async (question, answer, title) => {
+  let newQuestion = {
+    question,
+    answer,
+  };
+  let currentDeck = await getDeck(title);
+  let oldQuestions = [...currentDeck.questions];
+  oldQuestions.push(newQuestion);
+  currentDeck.questions = oldQuestions;
+  let allDecks = await getDecks();
+  allDecks = allDecks.filter((d) => d.title !== title);
+  allDecks.push(currentDeck);
+  await setLocalStorage(DECKS, allDecks);
+};
 
 export const setLocalStorage = async (key, value) =>
   await AsyncStorage.setItem(key, JSON.stringify(value));

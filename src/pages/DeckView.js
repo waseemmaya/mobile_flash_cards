@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
-import { Card, Title, Paragraph } from "react-native-paper";
+import { View } from "react-native";
+import { Button, Card, Title, Paragraph } from "react-native-paper";
+import { deleteDeck } from "../services/storageHelper";
 
 export default class DeckView extends Component {
   render() {
@@ -17,6 +18,39 @@ export default class DeckView extends Component {
             <Paragraph>{deck.questions.length} Cards</Paragraph>
           </Card.Content>
         </Card>
+        <Button
+          mode="outlined"
+          onPress={() => {
+            const { navigation } = this.props;
+            navigation.navigate("AddCard", {
+              ...deck,
+            });
+          }}
+        >
+          Add Card
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => {
+            const { navigation } = this.props;
+            navigation.navigate("Quiz", {
+              ...deck,
+            });
+          }}
+        >
+          Start Quiz
+        </Button>
+        <Button
+          color="red"
+          mode="contained"
+          onPress={() => {
+            deleteDeck(deck.title);
+            const { navigation } = this.props;
+            navigation.navigate("Decks");
+          }}
+        >
+          Delete Deck
+        </Button>
       </View>
     );
   }
