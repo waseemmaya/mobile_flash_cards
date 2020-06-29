@@ -60,6 +60,7 @@ export const initNotification = async () => {
 
       let notificationTime = new Date();
       let currTime = notificationTime.getTime();
+      // night 11 pm
       notificationTime.setHours(23, 0, 0);
       let scheduleTime = notificationTime.getTime();
       if (currTime > scheduleTime) {
