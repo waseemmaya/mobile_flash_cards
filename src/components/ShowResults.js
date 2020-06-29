@@ -1,11 +1,26 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Card, Title, Paragraph, Button } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Card, Paragraph, Button } from "react-native-paper";
+import {
+  clearLocalNotification,
+  initNotification,
+} from "../services/notifications";
+import { getFullDate } from "../services/dateHelper";
+import { setLocalStorage } from "../services/storageHelper";
+
+let lastAttemptedDate = "lastAttemptedDate";
 
 export default class ShowResults extends Component {
+  async componentDidMount() {
+    try {
+      await clearLocalNotification().then(initNotification);
+      await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  }
   render() {
     const { correct, incorrect, deck } = this.props.state;
-    console.log("deck: ", deck);
 
     return (
       <View style={{ flex: 1 }}>

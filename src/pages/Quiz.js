@@ -5,14 +5,6 @@ import NoQuestion from "../components/NoQuestion";
 import ShowResults from "../components/ShowResults";
 import QuizCount from "../components/QuizCount";
 import QuestionCard from "../components/QuestionCard";
-import { setLocalStorage } from "../services/storageHelper";
-import { getFullDate } from "../services/dateHelper";
-import {
-  clearLocalNotification,
-  initNotification,
-} from "../services/notifications";
-
-let lastAttemptedDate = "lastAttemptedDate";
 
 export default class Quiz extends Component {
   state = {
@@ -103,18 +95,18 @@ export default class Quiz extends Component {
     this.setState({ showAnswer: !this.state.showAnswer });
   };
 
-  handleCorrect = async () => {
+  handleCorrect = () => {
     const { deck, currentQuestion } = this.state;
-    if (deck.questions.length === currentQuestion + 1) {
-      await clearLocalNotification().then(initNotification);
-      await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
 
+    // this if block only execute when all the questions have been answered
+    if (deck.questions.length === currentQuestion + 1) {
       this.setState({
         showResults: true,
         correct: ++this.state.correct,
       });
       return;
     }
+
     this.setState({
       correct: ++this.state.correct,
       currentQuestion: ++this.state.currentQuestion,
@@ -122,17 +114,18 @@ export default class Quiz extends Component {
     });
   };
 
-  handleInCorrect = async () => {
+  handleInCorrect = () => {
     const { deck, currentQuestion } = this.state;
+
+    // this if block only execute when all the questions have been answered
     if (deck.questions.length === currentQuestion + 1) {
-      await clearLocalNotification().then(initNotification);
-      await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
       this.setState({
         incorrect: ++this.state.incorrect,
         showResults: true,
       });
       return;
     }
+
     this.setState({
       incorrect: ++this.state.incorrect,
       currentQuestion: ++this.state.currentQuestion,
