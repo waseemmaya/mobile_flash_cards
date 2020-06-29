@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Text, View } from "react-native";
-import { ActivityIndicator, Colors, Button } from "react-native-paper";
+import { ActivityIndicator, Colors } from "react-native-paper";
 import NoQuestion from "../components/NoQuestion";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import ShowResults from "../components/ShowResults";
+import QuizCount from "../components/QuizCount";
+import QuestionCard from "../components/QuestionCard";
 
 export default class Quiz extends Component {
   state = {
@@ -39,82 +40,8 @@ export default class Quiz extends Component {
     this.setQuiz();
   };
 
-  RenderProgres = () => {
-    const { currentQuestion, deck } = this.state;
-    let { questions } = deck;
-    let total = questions.length;
-
-    return (
-      <View>
-        <Text>
-          Rendering question {currentQuestion + 1} / {total}
-        </Text>
-      </View>
-    );
-  };
-
-  RenderQuestion = () => {
-    const { deck, currentQuestion, showAnswer } = this.state;
-    let { questions } = deck;
-    let question = questions[currentQuestion].question;
-    let answer = questions[currentQuestion].answer;
-
-    return (
-      <View>
-        <Text>Question: {question}</Text>
-        <TouchableOpacity
-          onPress={() => this.setState({ showAnswer: !this.state.showAnswer })}
-        >
-          <Text>{showAnswer ? answer : "Show Answer"}</Text>
-        </TouchableOpacity>
-        <Button
-          mode="contained"
-          color="red"
-          onPress={() => {
-            const { deck, currentQuestion } = this.state;
-            console.log("deck.questions.length: ", deck.questions.length);
-            console.log("currentQuestion + 1: ", currentQuestion + 1);
-            if (deck.questions.length === currentQuestion + 1) {
-              this.setState({
-                incorrect: ++this.state.incorrect,
-
-                showResults: true,
-              });
-              return;
-            }
-            this.setState({
-              incorrect: ++this.state.incorrect,
-              currentQuestion: ++this.state.currentQuestion,
-            });
-          }}
-        >
-          Incorrect
-        </Button>
-        <Button
-          mode="contained"
-          onPress={() => {
-            const { deck, currentQuestion } = this.state;
-            if (deck.questions.length === currentQuestion + 1) {
-              this.setState({
-                showResults: true,
-                correct: ++this.state.correct,
-              });
-              return;
-            }
-            this.setState({
-              correct: ++this.state.correct,
-              currentQuestion: ++this.state.currentQuestion,
-            });
-          }}
-        >
-          Correct
-        </Button>
-      </View>
-    );
-  };
-
   render() {
-    const { deck, showResults } = this.state;
+    const { deck, showResults, currentQuestion, showAnswer } = this.state;
 
     if (showResults) {
       return (
@@ -141,11 +68,64 @@ export default class Quiz extends Component {
       return <NoQuestion />;
     }
 
+    let total = questions.length;
+
+    let question = questions[currentQuestion].question;
+    let answer = questions[currentQuestion].answer;
+
+    let questionCardProps = {
+      toggleAnswer: this.toggleAnswer,
+      answer,
+      showAnswer,
+      question,
+      handleCorrect: this.handleCorrect,
+      handleInCorrect: this.handleInCorrect,
+    };
     return (
-      <View>
-        {this.RenderProgres()}
-        {this.RenderQuestion()}
+      <View style={{ flex: 1 }}>
+        <QuizCount current={currentQuestion} total={total} />
+        <QuestionCard {...questionCardProps} />
+
+        {/* {this.RenderQuestion()} */}
       </View>
     );
   }
+
+  toggleAnswer = () => {
+    this.setState({ showAnswer: !this.state.showAnswer });
+  };
+  handleCorrect = () => {
+    const { deck, currentQuestion } = this.state;
+    if (deck.questions.length === currentQuestion + 1) {
+      this.setState({
+        showResults: true,
+        correct: ++this.state.correct,
+      });
+      return;
+    }
+    this.setState({
+      correct: ++this.state.correct,
+      currentQuestion: ++this.state.currentQuestion,
+      showAnswer: false,
+    });
+  };
+
+  handleInCorrect = () => {
+    const { deck, currentQuestion } = this.state;
+    console.log("deck.questions.length: ", deck.questions.length);
+    console.log("currentQuestion + 1: ", currentQuestion + 1);
+    if (deck.questions.length === currentQuestion + 1) {
+      this.setState({
+        incorrect: ++this.state.incorrect,
+
+        showResults: true,
+      });
+      return;
+    }
+    this.setState({
+      incorrect: ++this.state.incorrect,
+      currentQuestion: ++this.state.currentQuestion,
+      showAnswer: false,
+    });
+  };
 }

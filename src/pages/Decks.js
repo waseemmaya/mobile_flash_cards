@@ -1,13 +1,7 @@
 import React, { Component } from "react";
-import {
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-  Text,
-  SafeAreaView,
-} from "react-native";
-import { Card, Title, Paragraph } from "react-native-paper";
+import { ScrollView, RefreshControl, SafeAreaView } from "react-native";
 import NoDeckFound from "../components/NoDeckFound";
+import DeckCard from "../components/DeckCard";
 
 export default class Decks extends Component {
   handleCard = (deck) => {
@@ -35,17 +29,11 @@ export default class Decks extends Component {
             <NoDeckFound />
           ) : (
             decksList.map((deck) => (
-              <TouchableOpacity
+              <DeckCard
                 key={deck.title}
-                onPress={() => this.handleCard(deck)}
-              >
-                <Card style={{ margin: 2 }}>
-                  <Card.Content>
-                    <Title>{deck.title}</Title>
-                    <Paragraph>{deck.questions.length} Cards</Paragraph>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
+                deck={deck}
+                handleCard={this.handleCard}
+              />
             ))
           )}
         </ScrollView>

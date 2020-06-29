@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { View, TextInput, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { TextInput, Button } from "react-native-paper";
 
 export default class AddCard extends Component {
   constructor(props) {
@@ -15,17 +16,30 @@ export default class AddCard extends Component {
     const deck = this.props.route.params;
     return (
       <View style={{ flex: 1 }}>
-        <TextInput
+        {/* <TextInput
           placeholder="Question..."
+        /> */}
+        <TextInput
           onChangeText={(e) => this.setState({ question: e })}
+          label="Question"
+          style={styles.input}
           value={question}
         />
+
         <TextInput
-          placeholder="Answer..."
           onChangeText={(e) => this.setState({ answer: e })}
+          label="Answer"
+          style={styles.input}
           value={answer}
         />
+
+        {/* <TextInput
+          placeholder="Answer..."
+          value={answer}
+        /> */}
         <Button
+          style={styles.addBtn}
+          color="#2A89FF"
           onPress={() => {
             this.props.handleAddCard(question, answer, deck.title);
             const { navigation } = this.props;
@@ -33,11 +47,25 @@ export default class AddCard extends Component {
               ...deck,
             });
           }}
-          title="Submit"
-          //   color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
+          disabled={!this.state.question || !this.state.answer}
+          mode="contained"
+        >
+          Submit
+        </Button>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  addBtn: {
+    margin: 10,
+    width: "50%",
+    alignSelf: "center",
+  },
+  input: {
+    width: "100%",
+    marginTop: 10,
+    marginBottom: 10,
+  },
+});

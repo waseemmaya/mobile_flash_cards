@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import Decks from "./src/pages/Decks";
 import AddDeck from "./src/pages/AddDeck";
 import DeckView from "./src/pages/DeckView";
@@ -87,7 +88,22 @@ export default class App extends Component {
       // <PaperProvider theme={theme}>
       <PaperProvider>
         <NavigationContainer>
-          <Tab.Navigator>
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
+
+                if (route.name === "AddDeck") {
+                  iconName = focused ? "ios-add" : "ios-add";
+                } else if (route.name === "Decks") {
+                  iconName = focused ? "ios-list-box" : "ios-list";
+                }
+
+                // You can return any component that you like here!
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+            })}
+          >
             <Tab.Screen scre={"hello"} name="Decks">
               {() => <DeckStacks {...customProps} />}
             </Tab.Screen>
