@@ -4,7 +4,8 @@ import { Card, Title, Paragraph, Button } from "react-native-paper";
 
 export default class ShowResults extends Component {
   render() {
-    const { correct, incorrect } = this.props.state;
+    const { correct, incorrect, deck } = this.props.state;
+    console.log("deck: ", deck);
 
     return (
       <View style={{ flex: 1 }}>
@@ -44,12 +45,15 @@ export default class ShowResults extends Component {
             style={styles.btn}
             color="#2A89FF"
             onPress={() => {
-              const { navigation } = this.props;
-              navigation.navigate("Decks");
+              const { navigation, deck } = this.props;
+
+              navigation.navigate("DeckView", {
+                ...deck,
+              });
             }}
             mode="contained"
           >
-            Go back to Decks
+            Go back to Deck
           </Button>
         </View>
       </View>

@@ -13,6 +13,26 @@ export default class AddDeck extends Component {
     };
   }
 
+  handleSubmit = () => {
+    const { deckTitle } = this.state;
+    const { navigation } = this.props;
+
+    if (!deckTitle) {
+      this.setState({
+        showSnack: true,
+      });
+      return;
+    }
+    this.props.handleAddDeck(deckTitle);
+    this.setState({
+      deckTitle: "",
+    });
+    navigation.navigate("DeckView", {
+      title: deckTitle,
+      questions: [],
+    });
+  };
+
   render() {
     const { deckTitle } = this.state;
     return (
@@ -38,24 +58,7 @@ export default class AddDeck extends Component {
         <Button
           style={styles.addBtn}
           color="#2A89FF"
-          onPress={async () => {
-            const { deckTitle } = this.state;
-            if (!deckTitle) {
-              this.setState({
-                showSnack: true,
-              });
-              return;
-            }
-            await this.props.handleAddDeck(deckTitle);
-            this.setState({
-              deckTitle: "",
-            });
-            const { navigation } = this.props;
-            navigation.navigate("DeckView", {
-              title: deckTitle,
-              questions: [],
-            });
-          }}
+          onPress={this.handleSubmit}
           disabled={!this.state.deckTitle}
           mode="contained"
         >

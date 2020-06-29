@@ -11,6 +11,12 @@ export default class AddCard extends Component {
     };
   }
 
+  handleChange = (value, label) => {
+    this.setState({
+      [label]: value,
+    });
+  };
+
   render() {
     const { question, answer } = this.state;
     const deck = this.props.route.params;
@@ -20,14 +26,14 @@ export default class AddCard extends Component {
           placeholder="Question..."
         /> */}
         <TextInput
-          onChangeText={(e) => this.setState({ question: e })}
+          onChangeText={(e) => this.handleChange(e, "question")}
           label="Question"
           style={styles.input}
           value={question}
         />
 
         <TextInput
-          onChangeText={(e) => this.setState({ answer: e })}
+          onChangeText={(e) => this.handleChange(e, "answer")}
           label="Answer"
           style={styles.input}
           value={answer}
