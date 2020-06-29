@@ -5,6 +5,10 @@ import NoQuestion from "../components/NoQuestion";
 import ShowResults from "../components/ShowResults";
 import QuizCount from "../components/QuizCount";
 import QuestionCard from "../components/QuestionCard";
+import { setLocalStorage } from "../services/storageHelper";
+import { getFullDate } from "../services/dateHelper";
+
+let lastAttemptedDate = "lastAttemptedDate";
 
 export default class Quiz extends Component {
   state = {
@@ -94,9 +98,11 @@ export default class Quiz extends Component {
   toggleAnswer = () => {
     this.setState({ showAnswer: !this.state.showAnswer });
   };
-  handleCorrect = () => {
+
+  handleCorrect = async () => {
     const { deck, currentQuestion } = this.state;
     if (deck.questions.length === currentQuestion + 1) {
+      await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
       this.setState({
         showResults: true,
         correct: ++this.state.correct,
@@ -110,14 +116,13 @@ export default class Quiz extends Component {
     });
   };
 
-  handleInCorrect = () => {
+  handleInCorrect = async () => {
     const { deck, currentQuestion } = this.state;
-    console.log("deck.questions.length: ", deck.questions.length);
-    console.log("currentQuestion + 1: ", currentQuestion + 1);
     if (deck.questions.length === currentQuestion + 1) {
+      await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
+
       this.setState({
         incorrect: ++this.state.incorrect,
-
         showResults: true,
       });
       return;

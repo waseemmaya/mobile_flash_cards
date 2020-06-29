@@ -15,6 +15,7 @@ import {
   addCardToDeck,
   saveDeckTitle,
 } from "./src/services/storageHelper";
+import { initNotification } from "./src/services/notifications";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -61,6 +62,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.getDecksList();
+    initNotification();
   }
 
   getDecksList = async () => {

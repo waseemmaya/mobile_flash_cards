@@ -1,6 +1,23 @@
 import { AsyncStorage } from "react-native";
 
 const DECKS = "DECKS";
+let lastAttemptedDate = "lastAttemptedDate";
+
+export const getLastAttempted = async () => {
+  try {
+    return await AsyncStorage.getItem(lastAttemptedDate);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const removeLastDate = async () => {
+  try {
+    await AsyncStorage.removeItem(lastAttemptedDate);
+  } catch (error) {
+    console.log("error: ", error);
+  }
+};
 
 export const getDecks = async () => {
   try {
@@ -42,6 +59,7 @@ export const saveDeckTitle = async (title) => {
   let newDeck = {
     title,
     questions: [],
+    createdAt: new Date(),
   };
   decks.push(newDeck);
   await setLocalStorage(DECKS, decks);
@@ -56,6 +74,7 @@ export const addCardToDeck = async (question, answer, title) => {
   let oldQuestions = [...currentDeck.questions];
   oldQuestions.push(newQuestion);
   currentDeck.questions = oldQuestions;
+  currentDeck.createdAt = new Date();
   let allDecks = await getDecks();
   allDecks = allDecks.filter((d) => d.title !== title);
   allDecks.push(currentDeck);

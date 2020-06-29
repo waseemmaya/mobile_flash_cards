@@ -16,6 +16,9 @@ export default class ShowResults extends Component {
         <Card style={styles.card}>
           <Card.Content>
             <Paragraph style={styles.description}>
+              Total : {correct + incorrect}
+            </Paragraph>
+            <Paragraph style={styles.description}>
               Correct : {correct}
             </Paragraph>
             <Paragraph style={styles.description}>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet } from "react-native";
 import SnackBarNotifier from "../components/SnackBarNotifier";
 import { Card, Title, Paragraph, TextInput, Button } from "react-native-paper";
+// import { removeLastDate } from "../services/storageHelper";
 
 export default class AddDeck extends Component {
   constructor(props) {
@@ -60,6 +61,18 @@ export default class AddDeck extends Component {
         >
           Submit
         </Button>
+
+        {/* <Button
+          style={styles.addBtn}
+          color="#2A89FF"
+          onPress={async () => {
+            await removeLastDate();
+          }}
+          mode="contained"
+        >
+          Remove Last Date
+        </Button> */}
+
         <SnackBarNotifier
           hide={() => this.setState({ showSnack: false })}
           visible={this.state.showSnack}
