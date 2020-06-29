@@ -7,6 +7,10 @@ import QuizCount from "../components/QuizCount";
 import QuestionCard from "../components/QuestionCard";
 import { setLocalStorage } from "../services/storageHelper";
 import { getFullDate } from "../services/dateHelper";
+import {
+  clearLocalNotification,
+  initNotification,
+} from "../services/notifications";
 
 let lastAttemptedDate = "lastAttemptedDate";
 
@@ -102,7 +106,9 @@ export default class Quiz extends Component {
   handleCorrect = async () => {
     const { deck, currentQuestion } = this.state;
     if (deck.questions.length === currentQuestion + 1) {
+      await clearLocalNotification().then(initNotification);
       await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
+
       this.setState({
         showResults: true,
         correct: ++this.state.correct,
@@ -119,8 +125,8 @@ export default class Quiz extends Component {
   handleInCorrect = async () => {
     const { deck, currentQuestion } = this.state;
     if (deck.questions.length === currentQuestion + 1) {
+      await clearLocalNotification().then(initNotification);
       await setLocalStorage(lastAttemptedDate, getFullDate(new Date()));
-
       this.setState({
         incorrect: ++this.state.incorrect,
         showResults: true,

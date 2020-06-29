@@ -1,8 +1,16 @@
 import { Notifications } from "expo";
-import { Platform } from "react-native";
+import { Platform, AsyncStorage } from "react-native";
 import * as Permissions from "expo-permissions";
 import { getLastAttempted } from "./storageHelper";
 import { getFullDate } from "./dateHelper";
+
+let lastAttemptedDate = "lastAttemptedDate";
+
+export const clearLocalNotification = () => {
+  return AsyncStorage.removeItem(lastAttemptedDate).then(
+    Notifications.cancelAllScheduledNotificationsAsync
+  );
+};
 
 const isQuizAttempted = async () => {
   let lastAttempt = await getLastAttempted();
@@ -69,8 +77,8 @@ export const initNotification = async () => {
 
       const schedulingOptions = {
         time: scheduleTime,
-        // time: new Date().getTime() + Number(5),
         repeat: "day",
+        // time: new Date().getTime() + Number(5),
       };
 
       Notifications.scheduleLocalNotificationAsync(
